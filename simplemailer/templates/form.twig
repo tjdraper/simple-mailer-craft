@@ -7,7 +7,7 @@
 		{# Fieldset #}
 		<fieldset
 			{% for attrKey, attr in formConfig.fieldsetAttr %}
-			{{ attrKey }}="{{ attr }}"
+			{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 			{% endfor %}
 		>
 
@@ -18,7 +18,7 @@
 					for="{{ inputKey }}"
 					{% endif %}
 					{% for attrKey, attr in formConfig.labelAttr %}
-					{{ attrKey }}="{{ attr }}"
+					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
 				>
 					asfd
@@ -33,7 +33,7 @@
 					id="{{ inputKey }}"
 					{% endif %}
 					{% for attrKey, attr in input.attr %}
-					{{ attrKey }}="{{ attr }}"
+					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
 					{% if input.required %}
 					required
@@ -50,7 +50,7 @@
 					id="{{ inputKey }}"
 					{% endif %}
 					{% for attrKey, attr in input.attr %}
-					{{ attrKey }}="{{ attr }}"
+					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
 					{% if input.required %}
 					required
@@ -64,7 +64,7 @@
 					id="{{ inputKey }}"
 					{% endif %}
 					{% for attrKey, attr in input.attr %}
-					{{ attrKey }}="{{ attr }}"
+					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
 					{% if input.required %}
 					required
@@ -79,7 +79,7 @@
 	{# Submit fieldset #}
 	<fieldset
 		{% for attrKey, attr in formConfig.fieldsetAttr %}
-		{{ attrKey }}="{{ attr }}"
+		{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 		{% endfor %}
 	>
 		<input
