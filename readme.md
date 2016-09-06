@@ -118,6 +118,6 @@ You can also override or set pretty much any value you can define in the form co
 
 `craft.simpleMailer.getFormConfig('basicContactForm')` returns an array of the form config.
 
-`{{ craft.simpleMailer.getFormOpen({class: 'myClass'})|raw }}` outputs an opening form tag and required hidden inputs.
+`{{ craft.simpleMailer.getFormOpen('basicContactForm', {class: 'myClass'})|raw }}` outputs an opening form tag and required hidden inputs.
 
 `{{ craft.simpleMailer.getFormClose()|raw }}` closes the form tag.
