@@ -99,7 +99,7 @@ class SimpleMailer_FormService extends BaseApplicationComponent
 		// Save the original templates path
 		$oldPath = craft()->templates->getTemplatesPath();
 
-		// Set tempaltes path to our plugin
+		// Set templates path to our plugin
 		$newPath = craft()->path->getPluginsPath() . 'simplemailer/templates';
 
 		// Tell Craft to look in our plugin directory for the template
@@ -121,10 +121,11 @@ class SimpleMailer_FormService extends BaseApplicationComponent
 	/**
 	 * Open a form
 	 *
+	 * @param string $form
 	 * @param array $params
 	 * @return string
 	 */
-	public function getFormOpen($params = array())
+	public function getFormOpen($form, $params = array())
 	{
 		// Start the form tag
 		$formOpen = '<form method="post"';
@@ -143,6 +144,9 @@ class SimpleMailer_FormService extends BaseApplicationComponent
 
 		// Get action
 		$formOpen .= '<input type="hidden" name="action" value="simpleMailer/form/post">';
+
+		// Set form name
+		$formOpen .= '<input type="hidden" name="form" value="' . $form . '">';
 
 		return $formOpen;
 	}

@@ -18,12 +18,13 @@ class SimpleMailerVariable
 	/**
 	 * Open a form
 	 *
+	 * @param string $form
 	 * @param array $params
 	 * @return string
 	 */
-	public function getFormOpen($params = array())
+	public function getFormOpen($form, $params = array())
 	{
-		return craft()->simpleMailer_form->getFormOpen($params);
+		return craft()->simpleMailer_form->getFormOpen($form, $params);
 	}
 
 	/**

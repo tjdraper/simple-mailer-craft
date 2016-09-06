@@ -1,5 +1,5 @@
 {# Form #}
-{{ craft.simpleMailer.getFormOpen(params.formAttr)|raw }}
+{{ craft.simpleMailer.getFormOpen(params.form, params.formAttr)|raw }}
 
 	{# Loop through inputs in specified form #}
 	{% for inputKey, input in formConfig.inputs %}
