@@ -20,6 +20,16 @@ Each key in the `forms` array represents the handle with which you will refer to
 return array(
 	'forms' => array(
 		'basicContactForm' => array(
+			'to' => array(
+				'me@domain.com',
+				'another@domain.com'
+			),
+			'subject' => 'My Contact Form',
+			'subjectInput' => 'subject',
+			'fromNameInput' => 'name',
+			'fromEmailInput' => 'email',
+			'messageSentMessage' => 'Your message was sent successfully',
+			'messageSentWrapperClass' => 'message-sent',
 			'errorClass' => 'my-error-class',
 			'formAttr' => array(
 				'id' => 'myForm',
@@ -127,6 +137,14 @@ You can also override or set pretty much any value you can define in the form co
 
 `craft.simpleMailer.getFormConfig('basicContactForm')` returns an array of the form config.
 
+#### getFormOpen
+
 `{{ craft.simpleMailer.getFormOpen('basicContactForm', {class: 'myClass'})|raw }}` outputs an opening form tag and required hidden inputs.
 
+#### getFormClose
+
 `{{ craft.simpleMailer.getFormClose()|raw }}` closes the form tag.
+
+#### Example
+
+See the template in `simplemailer/templates/form.twig` for an idea of how to build your own form.
