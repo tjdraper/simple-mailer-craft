@@ -8,6 +8,6 @@
 	"label": "simplemailer",
 	"name": "SimpleMailer",
 	"releaseFeedUrl": "https://raw.githubusercontent.com/tjdraper/simple-mailer-craft/master/changelog.json",
-	"version": "0.0.1",
-	"schemaVersion": "0.0.1"
+	"version": "1.0.0-b.1",
+	"schemaVersion": "1.0.0"
 }
