@@ -20,7 +20,8 @@ Each key in the `forms` array represents the handle with which you will refer to
 return array(
 	'forms' => array(
 		'basicContactForm' => array(
-			'attr' => array(
+			'errorClass' => 'my-error-class',
+			'formAttr' => array(
 				'id' => 'myForm',
 				'class' => 'my-form'
 			),
@@ -43,6 +44,14 @@ return array(
 					'label' => 'Name',
 					'type' => 'text',
 					'required' => true,
+					'attr' => array(
+						'class' => 'my-class'
+					),
+					'labelAttr' => array(
+						'class' => 'my-class'
+					),
+					'errorMessage' => '{{label}} is required',
+					'errorWrapperClass' => 'my-wrapper-error-class'
 				),
 				'email' => array (
 					'label' => 'Email Address',

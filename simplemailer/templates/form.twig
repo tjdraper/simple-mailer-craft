@@ -1,93 +1,110 @@
 {# Form #}
-{{ craft.simpleMailer.getFormOpen(params.form, params.formAttr)|raw }}
+{{ craft.simpleMailer.getFormOpen(formConfig.get('form'), formConfig.get('formAttr'))|raw }}
 
-	{# Loop through inputs in specified form #}
-	{% for inputKey, input in formConfig.inputs %}
+	{# Inputs loop #}
+	{% for input in formConfig.get('inputs') %}
 
 		{# Fieldset #}
 		<fieldset
-			{% for attrKey, attr in formConfig.fieldsetAttr %}
+			{% for attrKey, attr in formConfig.get('fieldsetAttr') %}
 			{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 			{% endfor %}
 		>
 
-			{# Show label if formconfig says to #}
-			{% if formConfig.labels %}
+			{# Label #}
+			{% if formConfig.get('labels') %}
 				<label
-					{% if input.labelAttr.for is not defined %}
-					for="{{ inputKey }}"
+					{% if input.get('labelAttr').for is not defined %}
+					for="{{ input.get('name') }}"
 					{% endif %}
-					{% for attrKey, attr in formConfig.labelAttr %}
+					{% for attrKey, attr in formConfig.get('labelAttr') %}
 					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
 				>
-					{{ input.label }}
+					{{ input.get('label') }}
 				</label>
-			{% endif %}
+			{% endif %}{# /Label #}
 
-			{# Show the correct input type #}
-			{% if input.type == 'select' %}
+			{# Show correct input type #}
+			{% if input.get('type') == 'select' %}
 				<select
-					name="{{ inputKey }}"
-					{% if input.attr.id is not defined %}
-					id="{{ inputKey }}"
+					name="{{ input.get('name') }}"
+					{% if input.get('attr').id is not defined %}
+					id="{{ input.get('name') }}"
 					{% endif %}
-					{% for attrKey, attr in input.attr %}
+					{% for attrKey, attr in input.get('attr') %}
 					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
-					{% if input.required %}
+					{% if input.get('required') %}
 					required
 					{% endif %}
 				>
-					{% for valueKey, value in input.values %}
-					<option value="{{ valueKey }}">{{ value }}</option>
+					{% for valueKey, value in input.get('values') %}
+					<option
+						value="{{ valueKey }}"
+						{% if input.get('value') == valueKey %}
+						selected
+						{% endif %}
+					>
+						{{ value }}
+					</option>
 					{% endfor %}
 				</select>
-			{% elseif input.type == 'textarea' %}
+			{% elseif input.get('type') == 'textarea' %}
 				<textarea
-					name="{{ inputKey }}"
-					{% if input.attr.id is not defined %}
-					id="{{ inputKey }}"
+					name="{{ input.get('name') }}"
+					{% if input.get('attr').id is not defined %}
+					id="{{ input.get('name') }}"
 					{% endif %}
-					{% for attrKey, attr in input.attr %}
+					{% for attrKey, attr in input.get('attr') %}
 					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
-					{% if input.required %}
+					{% if input.get('required') %}
 					required
 					{% endif %}
-				></textarea>
+				>{{ input.get('value') }}</textarea>
 			{% else %}
 				<input
-					name="{{ inputKey }}"
-					type="{{ input.type }}"
-					{% if input.attr.id is not defined %}
-					id="{{ inputKey }}"
+					name="{{ input.get('name') }}"
+					value="{{ input.get('value') }}"
+					type="{{ input.get('type') }}"
+					{% if input.get('attr').id is not defined %}
+					id="{{ input.get('name') }}"
 					{% endif %}
-					{% for attrKey, attr in input.attr %}
+					{% for attrKey, attr in input.get('attr') %}
 					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
-					{% if input.required %}
+					{% if input.get('required') %}
 					required
 					{% endif %}
 				>
-			{% endif %}
+			{% endif %}{# /Show correct input type #}
+
+			<div
+				class="{{ input.get('errorWrapperClass') }}"
+				{% if not input.get('hasError') %}
+				style="display: none;"
+				{% endif %}
+			>
+				{% if input.get('hasError') %}{{ input.get('errorMessage') }}{% endif %}
+			</div>
 
 		</fieldset>{# /Fieldset #}
 
-	{% endfor %}
+	{% endfor %}{# /Inputs loop #}
 
 	{# Submit fieldset #}
 	<fieldset
-		{% for attrKey, attr in formConfig.fieldsetAttr %}
+		{% for attrKey, attr in formConfig.get('fieldsetAttr') %}
 		{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 		{% endfor %}
 	>
 		<input
 			type="submit"
-			{% if formConfig.submitAttr.value is not defined %}
+			{% if formConfig.get('submitAttr').value is not defined %}
 			value="Submit"
 			{% endif %}
-			{% for attrKey, attr in formConfig.submitAttr %}
+			{% for attrKey, attr in formConfig.get('submitAttr') %}
 			{{ attrKey }}="{{ attr }}"
 			{% endfor %}
 		>

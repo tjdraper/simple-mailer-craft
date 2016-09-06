@@ -41,10 +41,14 @@ class SimpleMailerVariable
 	 * Get form config
 	 *
 	 * @param string $name
-	 * @return array
+	 * @param array $overrideParams
+	 * @return SimpleMailer_FormConfigService
 	 */
-	public function getFormConfig($name = null)
+	public function getFormConfig($name = null, $overrideParams = array())
 	{
-		return craft()->simpleMailer_form->getFormConfig($name);
+		return craft()->simpleMailer_form->getFormConfig(
+			$name,
+			$overrideParams
+		);
 	}
 }

@@ -30,7 +30,24 @@ class SimpleMailer_FormController extends BaseController
 		// Require this to be a post request
 		$this->requirePostRequest();
 
-		var_dump(craft()->config->get('forms', 'simplemailer'));
+		// Process the post request
+		$formConfig = craft()->simpleMailer_form->processFormPost(
+			craft()->request->getPost('form')
+		);
+
+		// Check if there are errors
+		if ($formConfig->hasErrors) {
+			// Check if ajax request
+			if (self::isAjaxRequest()) {
+				$this->returnJson($formConfig->getJsonArray());
+				return;
+			}
+
+			// End controller processing
+			return;
+		}
+
+		var_dump('need to process', $formConfig);
 		die;
 	}
 }

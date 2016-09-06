@@ -5,118 +5,9 @@ namespace Craft;
 class SimpleMailer_FormService extends BaseApplicationComponent
 {
 	/**
-	 * Get form
-	 *
-	 * @param array $params
-	 * @return string
+	 * @var array $formConfigs
 	 */
-	public function getForm($params = array())
-	{
-		// Make sure a form is specified
-		if (
-			! isset($params['form']) ||
-			! $formConfig = $this->getFormConfig($params['form'])
-		) {
-			return '';
-		}
-
-		/**
-		 * Set default params
-		 */
-
-		// Set formAttr
-		if (isset($params['formAttr'])) {
-			$formConfig['attr'] = array_merge(
-				$formConfig['attr'],
-				$params['formAttr']
-			);
-		}
-
-		// Set labelAttr
-		if (isset($params['labelAttr'])) {
-			$formConfig['labelAttr'] = array_merge(
-				$formConfig['labelAttr'],
-				$params['labelAttr']
-			);
-		}
-
-		// Set fieldsetAttr
-		if (isset($params['fieldsetAttr'])) {
-			$formConfig['fieldsetAttr'] = array_merge(
-				$formConfig['fieldsetAttr'],
-				$params['fieldsetAttr']
-			);
-		}
-
-		// Set labels
-		if (isset($params['labels'])) {
-			$formConfig['labels'] = $params['labels'];
-		}
-
-		// Set input attr
-		if (isset($params['inputAttr'])) {
-			$formConfig['inputAttr'] = array_merge(
-				$formConfig['inputAttr'],
-				$params['inputAttr']
-			);
-		}
-
-		// Set submitAttr
-		if (isset($params['submitAttr'])) {
-			$formConfig['submitAttr'] = array_merge(
-				$formConfig['submitAttr'],
-				$params['submitAttr']
-			);
-		}
-
-		// Loop through inputs and set default attr arrays
-		foreach ($formConfig['inputs'] as $key => $val) {
-			// Check for inputAttr
-			if ($formConfig['inputAttr']) {
-				$formConfig['inputs'][$key]['attr'] = array_merge(
-					$formConfig['inputs'][$key]['attr'],
-					$formConfig['inputAttr']
-				);
-			}
-
-			// Check for type attr
-			if (isset($params[$val['type'] . 'Attr'])) {
-				$formConfig['inputs'][$key]['attr'] = array_merge(
-					$formConfig['inputs'][$key]['attr'],
-					$params[$val['type'] . 'Attr']
-				);
-			}
-
-			// Check for name attr
-			if (isset($params[$key . 'Attr'])) {
-				$formConfig['inputs'][$key]['attr'] = array_merge(
-					$formConfig['inputs'][$key]['attr'],
-					$params[$key . 'Attr']
-				);
-			}
-		}
-
-		// Save the original templates path
-		$oldPath = craft()->templates->getTemplatesPath();
-
-		// Set templates path to our plugin
-		$newPath = craft()->path->getPluginsPath() . 'simplemailer/templates';
-
-		// Tell Craft to look in our plugin directory for the template
-		craft()->templates->setTemplatesPath($newPath);
-
-		// Render the template
-		$html = craft()->templates->render('form', array(
-			'formConfig' => $formConfig,
-			'params' => $params
-		));
-
-		// Reset Craft's template path
-		craft()->templates->setTemplatesPath($oldPath);
-
-		// Return the rendered HTML
-		return $html;
-	}
+	private $formConfigs = array();
 
 	/**
 	 * Open a form
@@ -165,99 +56,120 @@ class SimpleMailer_FormService extends BaseApplicationComponent
 	 * Get form config
 	 *
 	 * @param string $name
-	 * @return array
+	 * @param array $overrideParams
+	 * @return SimpleMailer_FormConfigService
 	 */
-	public function getFormConfig($name = null)
+	public function getFormConfig($name = null, $overrideParams = array())
 	{
-		// Make sure name is defined
-		if (! $name) {
-			return array();
+		if (isset($this->formConfigs[$name])) {
+			$formConfig = $this->formConfigs[$name];
+			$formConfig->setConfig($overrideParams);
+			return $formConfig;
+		} else {
+			return new SimpleMailer_FormConfigService(
+				$name,
+				$overrideParams
+			);
 		}
-
-		// Get forms config
-		$formConfigs = craft()->config->get('forms', 'simplemailer');
-
-		// Check for the specified form config
-		if (! isset($formConfigs[$name])) {
-			return array();
-		}
-
-		// Return the form config
-		return $this->formatFormConfig($formConfigs[$name]);
 	}
 
 	/**
-	 * Format a form config
+	 * Get form
 	 *
-	 * @param array $conf
-	 * @return array
+	 * @param array $params
+	 * @return string
 	 */
-	private function formatFormConfig($conf)
+	public function getForm($params = array())
 	{
-		// Make sure attr is set
-		$conf['attr'] = isset($conf['attr']) ?
-			$conf['attr'] :
-			array();
+		// Make sure form is specified
+		if (! isset($params['form'])) {
+			return '';
+		}
 
-		// Make sure labelAttr is set
-		$conf['labelAttr'] = isset($conf['labelAttr']) ?
-			$conf['labelAttr'] :
-			array();
+		// Get the form config
+		$formConfig = $this->getFormConfig($params['form'], $params);
 
-		// Make sure fieldsetAttr is set
-		$conf['fieldsetAttr'] = isset($conf['fieldsetAttr']) ?
-			$conf['fieldsetAttr'] :
-			true;
+		// Check if there are errors on the form config
+		if ($formConfig->hasErrors) {
+			// Check if class already exists
+			$existingClass = isset($formConfig->formAttr['class']) ?
+				$formConfig->formAttr['class'] : '';
 
-		// Make sure labels is set
-		$conf['labels'] = isset($conf['labels']) ?
-			$conf['labels'] :
-			true;
+			// Add error class
+			$existingClass .= " {$formConfig->errorClass}";
 
-		// Make sure inputAttr is set
-		$conf['inputAttr'] = isset($conf['inputAttr']) ?
-			$conf['inputAttr'] :
-			array();
+			// Set error class with config
+			$formConfig->setConfig(array(
+				'formAttr' => array(
+					'class' => $existingClass
+				)
+			));
 
-		// Make sure inputs is set
-		$conf['inputs'] = isset($conf['inputs']) ?
-			$conf['inputs'] :
-			array();
+			// Loop through inputs
+			foreach ($formConfig->inputs as $input) {
+				// Check if the input has errors
+				if ($input->hasError) {
+					$existingClass = isset($input->attr['class']) ?
+						$input->attr['class'] : '';
 
-		// Make sure submitAttr is set
-		$conf['submitAttr'] = isset($conf['submitAttr']) ?
-			$conf['submitAttr'] :
-			array();
+					// Add error class
+					$existingClass .= " {$input->errorClass}";
 
-		// Loop through inputs
-		foreach ($conf['inputs'] as $key => $val) {
-			// Make sure label is set
-			if (! isset($val['label'])) {
-				$conf['inputs'][$key]['label'] = $key;
-			}
-
-			// Make sure type is set
-			if (! isset($val['type'])) {
-				$conf['inputs'][$key]['type'] = 'text';
-			}
-
-			// Make sure required is set
-			if (! isset($val['required'])) {
-				$conf['inputs'][$key]['required'] = false;
-			}
-
-			// Make sure attr is set
-			if (! isset($val['attr'])) {
-				$conf['inputs'][$key]['attr'] = array();
-			}
-
-			// Check if type is select
-			if ($val['type'] === 'select' and ! isset($val['values'])) {
-				$config['inputs'][$key]['values'] = array();
+					// Set error class with config
+					$input->setConfig(array(
+						'attr' => array(
+							'class' => $existingClass
+						)
+					));
+				}
 			}
 		}
 
-		// Return the config
-		return $conf;
+		// Save the original templates path
+		$oldPath = craft()->templates->getTemplatesPath();
+
+		// Set templates path to our plugin
+		$newPath = craft()->path->getPluginsPath() . 'simplemailer/templates';
+
+		// Tell Craft to look in our plugin directory for the template
+		craft()->templates->setTemplatesPath($newPath);
+
+		// Render the template
+		$html = craft()->templates->render('form', array(
+			'formConfig' => $formConfig
+		));
+
+		// Reset Craft's template path
+		craft()->templates->setTemplatesPath($oldPath);
+
+		// Return the rendered HTML
+		return $html;
+	}
+
+	/**
+	 * Process form post
+	 *
+	 * @param string $form
+	 * @throws Exception
+	 * @return SimpleMailer_FormConfigService
+	 */
+	public function processFormPost($form)
+	{
+		// Get the form config
+		$formConfig = new SimpleMailer_FormConfigService($form);
+
+		// Make sure we have a valid form config
+		if (! $formConfig->form) {
+			throw new Exception('Invalid form');
+		}
+
+		// Process the form config from post
+		$formConfig->processFromPost();
+
+		// Save the form config to this service intsance
+		$this->formConfigs[$formConfig->form] = $formConfig;
+
+		// Return the form config
+		return $formConfig;
 	}
 }
