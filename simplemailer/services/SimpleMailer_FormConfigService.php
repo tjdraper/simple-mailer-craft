@@ -5,9 +5,39 @@ namespace Craft;
 class SimpleMailer_FormConfigService extends BaseApplicationComponent
 {
 	/**
+	 * @var bool $processed
+	 */
+	protected $processed = false;
+
+	/**
 	 * @var bool $hasErrors
 	 */
 	protected $hasErrors = false;
+
+	/**
+	 * @var array $to
+	 */
+	protected $to = array();
+
+	/**
+	 * @var string $subject
+	 */
+	protected $subject = 'Simple Mailer Form';
+
+	/**
+	 * @var string $subjectInput
+	 */
+	protected $subjectInput = '';
+
+	/**
+	 * @var string $fromNameInput
+	 */
+	protected $fromNameInput = '';
+
+	/**
+	 * @var string $fromEmailInput
+	 */
+	protected $fromEmailInput = '';
 
 	/**
 	 * @var string $errorClass
@@ -55,6 +85,16 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 	protected $inputs = array();
 
 	/**
+	 * @var string $messageSentWrapperClass
+	 */
+	protected $messageSentMessage = '';
+
+	/**
+	 * @var string $messageSentWrapperClass
+	 */
+	protected $messageSentWrapperClass = 'message-sent';
+
+	/**
 	 * Constructor
 	 *
 	 * @param string $form
@@ -69,6 +109,9 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 		if (! isset($formConfigs[$form])) {
 			return;
 		}
+
+		// Set message sent message
+		$this->messageSentMessage = Craft::t('MessageSentMessage');
 
 		// Set the form
 		$this->form = $form;
@@ -116,9 +159,29 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 	 */
 	public function setConfig($params = array())
 	{
-		// Check for error class
-		if (isset($params['errorClass'])) {
-			$this->errorClass = (string) $params['errorClass'];
+		// Check for to array
+		if (isset($params['to'])) {
+			$this->to = (array) $params['to'];
+		}
+
+		// Check for from name input
+		if (isset($params['subject'])) {
+			$this->subject = (string) $params['subject'];
+		}
+
+		// Check for from name input
+		if (isset($params['subjectInput'])) {
+			$this->subjectInput = (string) $params['subjectInput'];
+		}
+
+		// Check for from name input
+		if (isset($params['fromNameInput'])) {
+			$this->fromNameInput = (string) $params['fromNameInput'];
+		}
+
+		// Check for from email input
+		if (isset($params['fromEmailInput'])) {
+			$this->fromEmailInput = (string) $params['fromEmailInput'];
 		}
 
 		// Check for formAttr params
@@ -166,6 +229,11 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 			);
 		}
 
+		// Check for from name input
+		if (isset($params['messageSentWrapperClass'])) {
+			$this->messageSentWrapperClass = (string) $params['messageSentWrapperClass'];
+		}
+
 		// Check for inputs
 		if (! isset($params['inputs'])) {
 			return;
@@ -176,7 +244,7 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 
 		// Loop through inputs and set
 		foreach ($inputs as $key => $val) {
-			$this->inputs[] = new SimpleMailer_FormInputService($key, $val);
+			$this->inputs[$key] = new SimpleMailer_FormInputService($key, $val);
 		}
 	}
 
@@ -195,6 +263,9 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 				$this->hasErrors = true;
 			}
 		}
+
+		// Set processed to true
+		$this->processed = true;
 	}
 
 	/**

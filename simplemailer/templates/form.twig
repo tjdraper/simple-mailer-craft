@@ -1,6 +1,12 @@
 {# Form #}
 {{ craft.simpleMailer.getFormOpen(formConfig.get('form'), formConfig.get('formAttr'))|raw }}
 
+	{% if craft.session.getFlash(formConfig.get('form') ~ '_Sent') %}
+		<div class="{{ formConfig.get('messageSentWrapperClass') }}">
+			<p>{{ formConfig.get('messageSentMessage') }}</p>
+		</div>
+	{% endif %}
+
 	{# Inputs loop #}
 	{% for input in formConfig.get('inputs') %}
 

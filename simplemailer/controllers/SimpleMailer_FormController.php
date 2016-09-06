@@ -40,14 +40,27 @@ class SimpleMailer_FormController extends BaseController
 			// Check if ajax request
 			if (self::isAjaxRequest()) {
 				$this->returnJson($formConfig->getJsonArray());
-				return;
 			}
 
 			// End controller processing
 			return;
 		}
 
-		var_dump('need to process', $formConfig);
-		die;
+		// Send the form
+		craft()->simpleMailer_mail->sendForm($formConfig);
+
+		// Check if ajax request
+		if (self::isAjaxRequest()) {
+			$this->returnJson($formConfig->getJsonArray());
+
+			// End controller processing
+			return;
+		}
+
+		// Set success flash variable for reload
+		craft()->userSession->setFlash("{$formConfig->form}_Sent", true);
+
+		// Redirect to posted URL
+		$this->redirectToPostedUrl();
 	}
 }
