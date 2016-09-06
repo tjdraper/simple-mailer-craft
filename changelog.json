@@ -1,1 +1,10 @@
-[]
+[
+	{
+		"version": "1.0.0-b.1",
+		"downloadUrl": "https://github.com/tjdraper/simple-mailer-craft/archive/1.0.0-b.1.zip",
+		"date": "2016-09-06T17:50:33+00:00",
+		"notes": [
+			"Hello world! This is the initial beta release of SimpleMailer"
+		]
+	},
+]
