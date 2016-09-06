@@ -1,0 +1,96 @@
+{# Form #}
+{{ craft.simpleMailer.getFormOpen(params.formAttr)|raw }}
+
+	{# Loop through inputs in specified form #}
+	{% for inputKey, input in formConfig.inputs %}
+
+		{# Fieldset #}
+		<fieldset
+			{% for attrKey, attr in formConfig.fieldsetAttr %}
+			{{ attrKey }}="{{ attr }}"
+			{% endfor %}
+		>
+
+			{# Show label if formconfig says to #}
+			{% if formConfig.labels %}
+				<label
+					{% if input.labelAttr.for is not defined %}
+					for="{{ inputKey }}"
+					{% endif %}
+					{% for attrKey, attr in formConfig.labelAttr %}
+					{{ attrKey }}="{{ attr }}"
+					{% endfor %}
+				>
+					asfd
+				</label>
+			{% endif %}
+
+			{# Show the correct input type #}
+			{% if input.type == 'select' %}
+				<select
+					name="{{ inputKey }}"
+					{% if input.attr.id is not defined %}
+					id="{{ inputKey }}"
+					{% endif %}
+					{% for attrKey, attr in input.attr %}
+					{{ attrKey }}="{{ attr }}"
+					{% endfor %}
+					{% if input.required %}
+					required
+					{% endif %}
+				>
+					{% for valueKey, value in input.values %}
+					<option value="{{ valueKey }}">{{ value }}</option>
+					{% endfor %}
+				</select>
+			{% elseif input.type == 'textarea' %}
+				<textarea
+					name="{{ inputKey }}"
+					{% if input.attr.id is not defined %}
+					id="{{ inputKey }}"
+					{% endif %}
+					{% for attrKey, attr in input.attr %}
+					{{ attrKey }}="{{ attr }}"
+					{% endfor %}
+					{% if input.required %}
+					required
+					{% endif %}
+				></textarea>
+			{% else %}
+				<input
+					name="{{ inputKey }}"
+					type="{{ input.type }}"
+					{% if input.attr.id is not defined %}
+					id="{{ inputKey }}"
+					{% endif %}
+					{% for attrKey, attr in input.attr %}
+					{{ attrKey }}="{{ attr }}"
+					{% endfor %}
+					{% if input.required %}
+					required
+					{% endif %}
+				>
+			{% endif %}
+
+		</fieldset>{# /Fieldset #}
+
+	{% endfor %}
+
+	{# Submit fieldset #}
+	<fieldset
+		{% for attrKey, attr in formConfig.fieldsetAttr %}
+		{{ attrKey }}="{{ attr }}"
+		{% endfor %}
+	>
+		<input
+			type="submit"
+			{% if formConfig.submitAttr.value is not defined %}
+			value="Submit"
+			{% endif %}
+			{% for attrKey, attr in formConfig.submitAttr %}
+			{{ attrKey }}="{{ attr }}"
+			{% endfor %}
+		>
+	</fieldset>{# /Submit fieldset #}
+
+{{ craft.simpleMailer.getFormClose()|raw }}{# /Form #}
