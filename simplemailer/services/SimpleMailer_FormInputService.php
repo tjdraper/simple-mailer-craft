@@ -52,7 +52,7 @@ class SimpleMailer_FormInputService extends BaseApplicationComponent
 	/**
 	 * @var string $errorWrapperClass
 	 */
-	protected $errorWrapperClass = 'error-wrapper';
+	protected $errorWrapperClass = '';
 
 	/**
 	 * @var mixed value
@@ -171,7 +171,7 @@ class SimpleMailer_FormInputService extends BaseApplicationComponent
 
 		// Check for errorWrapperClass
 		if (isset($config['errorWrapperClass'])) {
-			$this->errorClass = (string) $config['errorWrapperClass'];
+			$this->errorWrapperClass = (string) $config['errorWrapperClass'];
 		}
 
 		// Check for value

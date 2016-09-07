@@ -49,6 +49,7 @@ return array(
 				'class' => 'submit',
 				'value' => 'Send your message'
 			),
+			'errorWrapperClass' => 'contact-form__error-wrapper',
 			'inputs' => array(
 				'name' => array (
 					'label' => 'Name',

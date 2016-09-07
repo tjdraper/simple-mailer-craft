@@ -1,11 +1,9 @@
 {# Form #}
 {{ craft.simpleMailer.getFormOpen(formConfig.get('form'), formConfig.get('formAttr'))|raw }}
 
-	{% if craft.session.getFlash(formConfig.get('form') ~ '_Sent') %}
-		<div class="{{ formConfig.get('messageSentWrapperClass') }}">
-			<p>{{ formConfig.get('messageSentMessage') }}</p>
-		</div>
-	{% endif %}
+	<div class="{{ formConfig.get('messageSentWrapperClass') }}"{% if not craft.session.getFlash(formConfig.get('form') ~ '_Sent') %} style="display: none;"{% endif %}>
+		<p>{{ formConfig.get('messageSentMessage') }}</p>
+	</div>
 
 	{# Inputs loop #}
 	{% for input in formConfig.get('inputs') %}
@@ -87,7 +85,7 @@
 			{% endif %}{# /Show correct input type #}
 
 			<div
-				class="{{ input.get('errorWrapperClass') }}"
+				class="{% if input.get('errorWrapperClass') %}{{ input.get('errorWrapperClass') }}{% else %}{{ formConfig.get('errorWrapperClass') }}{% endif %}"
 				{% if not input.get('hasError') %}
 				style="display: none;"
 				{% endif %}
