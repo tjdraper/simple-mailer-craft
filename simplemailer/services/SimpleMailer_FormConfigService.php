@@ -45,6 +45,11 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 	protected $errorClass = 'error';
 
 	/**
+	 * @var string $errorWrapperClass
+	 */
+	protected $errorWrapperClass = 'error-wrapper';
+
+	/**
 	 * @var string $form
 	 */
 	protected $form = '';
@@ -232,6 +237,16 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 		// Check for from name input
 		if (isset($params['messageSentWrapperClass'])) {
 			$this->messageSentWrapperClass = (string) $params['messageSentWrapperClass'];
+		}
+
+		// Check for from name input
+		if (isset($params['errorClass'])) {
+			$this->errorClass = (string) $params['errorClass'];
+		}
+
+		// Check for from name input
+		if (isset($params['errorWrapperClass'])) {
+			$this->errorWrapperClass = (string) $params['errorWrapperClass'];
 		}
 
 		// Check for inputs

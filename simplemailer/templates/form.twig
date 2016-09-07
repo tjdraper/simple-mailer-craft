@@ -87,7 +87,7 @@
 			{% endif %}{# /Show correct input type #}
 
 			<div
-				class="{{ input.get('errorWrapperClass') }}"
+				class="{% if input.get('errorWrapperClass') %}{{ input.get('errorWrapperClass') }}{% else %}{{ formConfig.get('errorWrapperClass') }}{% endif %}"
 				{% if not input.get('hasError') %}
 				style="display: none;"
 				{% endif %}
