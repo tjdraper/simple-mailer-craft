@@ -2,102 +2,37 @@
 
 namespace Craft;
 
-class SimpleMailer_FormConfigService extends BaseApplicationComponent
+class SimpleMailer_FormConfigModel extends BaseModel
 {
 	/**
-	 * @var bool $processed
+	 * Define model attributes
+	 *
+	 * @return array
 	 */
-	protected $processed = false;
-
-	/**
-	 * @var bool $hasErrors
-	 */
-	protected $hasErrors = false;
-
-	/**
-	 * @var array $to
-	 */
-	protected $to = array();
-
-	/**
-	 * @var string $subject
-	 */
-	protected $subject = 'Simple Mailer Form';
-
-	/**
-	 * @var string $subjectInput
-	 */
-	protected $subjectInput = '';
-
-	/**
-	 * @var string $fromNameInput
-	 */
-	protected $fromNameInput = '';
-
-	/**
-	 * @var string $fromEmailInput
-	 */
-	protected $fromEmailInput = '';
-
-	/**
-	 * @var string $errorClass
-	 */
-	protected $errorClass = 'error';
-
-	/**
-	 * @var string $errorWrapperClass
-	 */
-	protected $errorWrapperClass = 'error-wrapper';
-
-	/**
-	 * @var string $form
-	 */
-	protected $form = '';
-
-	/**
-	 * @var array $attr
-	 */
-	protected $formAttr = array();
-
-	/**
-	 * @val array labelAttr
-	 */
-	protected $labelAttr = array();
-
-	/**
-	 * @var array fieldsetAttr
-	 */
-	protected $fieldsetAttr = array();
-
-	/**
-	 * @var bool labels
-	 */
-	protected $labels = true;
-
-	/**
-	 * @var array inputAttr
-	 */
-	protected $inputAttr = array();
-
-	/**
-	 * @var array submitAttr
-	 */
-	protected $submitAttr = array();
-
-	/**
-	 * @var array inputs
-	 */
-	protected $inputs = array();
-
-	/**
-	 * @var string $messageSentWrapperClass
-	 */
-	protected $messageSentMessage = '';
-
-	/**
-	 * @var string $messageSentWrapperClass
-	 */
-	protected $messageSentWrapperClass = 'message-sent';
+	protected function defineAttributes()
+	{
+		return array(
+			'processed' => AttributeType::Bool,
+			'hasErrors' => AttributeType::Bool,
+			'to' => AttributeType::Mixed,
+			'subject' => AttributeType::String,
+			'subjectInput' => AttributeType::String,
+			'fromNameInput' => AttributeType::String,
+			'fromEmailInput' => AttributeType::String,
+			'errorClass' => AttributeType::String,
+			'errorWrapperClass' => AttributeType::String,
+			'form' => AttributeType::String,
+			'formAttr' => AttributeType::Mixed,
+			'labelAttr' => AttributeType::Mixed,
+			'fieldsetAttr' => AttributeType::Mixed,
+			'labels' => AttributeType::Bool,
+			'inputAttr' => AttributeType::Mixed,
+			'submitAttr' => AttributeType::Mixed,
+			'inputs' => AttributeType::Mixed,
+			'messageSentMessage' => AttributeType::String,
+			'messageSentWrapperClass' => AttributeType::String
+		);
+	}
 
 	/**
 	 * Constructor
@@ -107,6 +42,26 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 	 */
 	public function __construct($form, $overrideParams = array())
 	{
+		// Run the parent constructor
+		parent::__construct();
+
+		// Set arrays since models do not have an array type
+		$this->to = array();
+		$this->formAttr = array();
+		$this->labelAttr = array();
+		$this->fieldsetAttr = array();
+		$this->inputAttr = array();
+		$this->submitAttr = array();
+		$this->inputs = array();
+
+		// Set defaults
+		$this->labels = true;
+		$this->subject = 'Simple Mailer Form';
+		$this->errorClass = 'error';
+		$this->errorWrapperClass = 'error-wrapper';
+		$this->messageSentMessage = Craft::t('MessageSentMessage');
+		$this->messageSentWrapperClass = 'message-sent';
+
 		// Get forms config
 		$formConfigs = craft()->config->get('forms', 'simplemailer');
 
@@ -114,9 +69,6 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 		if (! isset($formConfigs[$form])) {
 			return;
 		}
-
-		// Set message sent message
-		$this->messageSentMessage = Craft::t('MessageSentMessage');
 
 		// Set the form
 		$this->form = $form;
@@ -129,21 +81,6 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 
 		// Set overrides
 		$this->setConfig($overrideParams);
-	}
-
-	/**
-	 * Get magic method
-	 *
-	 * @param $name
-	 * @return mixed
-	 */
-	public function __get($name)
-	{
-		if (isset($this->{$name})) {
-			return $this->{$name};
-		}
-
-		return null;
 	}
 
 	/**
@@ -257,10 +194,15 @@ class SimpleMailer_FormConfigService extends BaseApplicationComponent
 		// Make sure it's an array
 		$inputs = (array) $params['inputs'];
 
+		// Inputs array
+		$inputArray = array();
+
 		// Loop through inputs and set
 		foreach ($inputs as $key => $val) {
-			$this->inputs[$key] = new SimpleMailer_FormInputService($key, $val);
+			$inputArray[$key] = new SimpleMailer_FormInputModel($key, $val);
 		}
+
+		$this->inputs = $inputArray;
 	}
 
 	/**

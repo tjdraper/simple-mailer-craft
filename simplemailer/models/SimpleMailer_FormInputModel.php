@@ -2,67 +2,30 @@
 
 namespace Craft;
 
-class SimpleMailer_FormInputService extends BaseApplicationComponent
+class SimpleMailer_FormInputModel extends BaseModel
 {
 	/**
-	 * @var string $name
+	 * Define model attributes
+	 *
+	 * @return array
 	 */
-	protected $name = '';
-
-	/**
-	 * @var string $label
-	 */
-	protected $label = '';
-
-	/**
-	 * @var string $type
-	 */
-	protected $type = 'text';
-
-	/**
-	 * @var bool $required
-	 */
-	protected $required = false;
-
-	/**
-	 * @var array $attr
-	 */
-	protected $attr = array();
-
-	/**
-	 * @var array $attr
-	 */
-	protected $labelAttr = array();
-
-	/**
-	 * @var string $errorMessage
-	 */
-	protected $errorMessage = '';
-
-	/**
-	 * @var bool $error
-	 */
-	protected $hasError = false;
-
-	/**
-	 * @var string $errorClass
-	 */
-	protected $errorClass = 'error';
-
-	/**
-	 * @var string $errorWrapperClass
-	 */
-	protected $errorWrapperClass = '';
-
-	/**
-	 * @var mixed value
-	 */
-	protected $value = false;
-
-	/**
-	 * @var array $values For selects
-	 */
-	protected $values = array();
+	protected function defineAttributes()
+	{
+		return array(
+			'name' => AttributeType::String,
+			'label' => AttributeType::String,
+			'type' => AttributeType::String,
+			'required' => AttributeType::Bool,
+			'attr' => AttributeType::Mixed,
+			'labelAttr' => AttributeType::Mixed,
+			'errorMessage' => AttributeType::String,
+			'hasError' => AttributeType::Bool,
+			'errorClass' => AttributeType::String,
+			'errorWrapperClass' => AttributeType::String,
+			'value' => AttributeType::String,
+			'values' => AttributeType::Mixed
+		);
+	}
 
 	/**
 	 * Constructor
@@ -72,26 +35,23 @@ class SimpleMailer_FormInputService extends BaseApplicationComponent
 	 */
 	public function __construct($name, $config = array())
 	{
+		// Run the parent constructor
+		parent::__construct();
+
+		// Set arrays since models do not have an array type
+		$this->attr = array();
+		$this->labelAttr = array();
+		$this->values = array();
+
+		// Set defaults
+		$this->type = 'text';
+		$this->errorClass = 'error';
+
 		// Set input name
 		$this->name = $this->label = (string) $name;
 
 		// Set config
 		$this->setConfig($config);
-	}
-
-	/**
-	 * Get magic method
-	 *
-	 * @param $name
-	 * @return mixed
-	 */
-	public function __get($name)
-	{
-		if (isset($this->{$name})) {
-			return $this->{$name};
-		}
-
-		return null;
 	}
 
 	/**
