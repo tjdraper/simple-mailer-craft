@@ -18,12 +18,18 @@
 			{# Label #}
 			{% if formConfig.labels %}
 				<label
-					{% if input.labelAttr.for is not defined %}
+					{% if formConfig.labelAttr.for is not defined and input.labelAttr.for is not defined %}
 					for="{{ input.name }}"
 					{% endif %}
+					{% if input.labelAttr|length %}
 					{% for attrKey, attr in input.labelAttr %}
 					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
 					{% endfor %}
+					{% else %}
+					{% for attrKey, attr in formConfig.labelAttr %}
+					{{ attrKey }}{% if attr != '' %}="{{ attr }}"{% endif %}
+					{% endfor %}
+					{% endif %}
 				>
 					{{ input.label }}
 				</label>
