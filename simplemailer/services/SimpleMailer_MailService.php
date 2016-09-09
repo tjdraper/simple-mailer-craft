@@ -7,7 +7,7 @@ class SimpleMailer_MailService extends BaseApplicationComponent
 	/**
 	 * Send a form
 	 *
-	 * @param SimpleMailer_FormConfigService $formConfig
+	 * @param SimpleMailer_FormConfigModel $formConfig
 	 */
 	public function sendForm($formConfig)
 	{

@@ -57,7 +57,7 @@ class SimpleMailer_FormService extends BaseApplicationComponent
 	 *
 	 * @param string $name
 	 * @param array $overrideParams
-	 * @return SimpleMailer_FormConfigService
+	 * @return SimpleMailer_FormConfigModel
 	 */
 	public function getFormConfig($name = null, $overrideParams = array())
 	{
@@ -66,7 +66,7 @@ class SimpleMailer_FormService extends BaseApplicationComponent
 			$formConfig->setConfig($overrideParams);
 			return $formConfig;
 		} else {
-			return new SimpleMailer_FormConfigService(
+			return new SimpleMailer_FormConfigModel(
 				$name,
 				$overrideParams
 			);
@@ -151,12 +151,12 @@ class SimpleMailer_FormService extends BaseApplicationComponent
 	 *
 	 * @param string $form
 	 * @throws Exception
-	 * @return SimpleMailer_FormConfigService
+	 * @return SimpleMailer_FormConfigModel
 	 */
 	public function processFormPost($form)
 	{
 		// Get the form config
-		$formConfig = new SimpleMailer_FormConfigService($form);
+		$formConfig = new SimpleMailer_FormConfigModel($form);
 
 		// Make sure we have a valid form config
 		if (! $formConfig->form) {
